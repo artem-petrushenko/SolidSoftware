@@ -37,8 +37,8 @@ class _AnimatedContainerExampleState extends State<AnimatedContainerExample> {
         context.read<RainbowBloc>().add(const RainbowEvent.changeColors());
       },
       child: AnimatedContainer(
-        width: MediaQuery.of(context).size.width,
-        height: MediaQuery.of(context).size.height,
+        width: double.infinity,
+        height: double.infinity,
         color: Color(color),
         alignment: Alignment.center,
         duration: const Duration(seconds: 2),
