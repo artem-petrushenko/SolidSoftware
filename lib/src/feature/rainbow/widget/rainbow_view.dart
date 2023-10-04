@@ -27,6 +27,7 @@ class AnimatedContainerExample extends StatefulWidget {
 class _AnimatedContainerExampleState extends State<AnimatedContainerExample> {
   @override
   Widget build(BuildContext context) {
+    // Get the background color and text color from the RainbowBloc's state.
     final color =
         context.select((RainbowBloc bloc) => bloc.state.backgroundColor);
     final textColor =

@@ -31,6 +31,7 @@ class RainbowBloc extends Bloc<RainbowEvent, RainbowState> {
     );
   }
 
+  // Fetch the colors from the repository and emit a new state.
   Future<void> _onFetchColors(
     _FetchColors event,
     Emitter<RainbowState> emit,
@@ -44,6 +45,7 @@ class RainbowBloc extends Bloc<RainbowEvent, RainbowState> {
     }
   }
 
+  // Generate random colors, update the repository, and emit a new state.
   Future<void> _onChangeColors(
     _ChangeColors event,
     Emitter<RainbowState> emit,
@@ -54,16 +56,15 @@ class RainbowBloc extends Bloc<RainbowEvent, RainbowState> {
       final green = random.nextInt(256);
       final blue = random.nextInt(256);
 
-      final newColor = (alpha << 24) | (red << 16) | (green << 8) | blue;
+      final newColor = generateColor(alpha, red, green, blue);
 
       final invertedRed = 255 - red;
       final invertedGreen = 255 - green;
       final invertedBlue = 255 - blue;
 
-      final newTextColor = (alpha << 24) |
-          (invertedRed << 16) |
-          (invertedGreen << 8) |
-          invertedBlue;
+      final newTextColor =
+          generateColor(alpha, invertedRed, invertedGreen, invertedBlue);
+
       await _rainbowRepository.setBackgroundColor(newColor);
       await _rainbowRepository.setTextColor(newTextColor);
 
@@ -72,4 +73,8 @@ class RainbowBloc extends Bloc<RainbowEvent, RainbowState> {
       emit(const _Current(backgroundColor: 0xFF000000, textColor: 0xFFFFFFFF));
     }
   }
+
+  int generateColor(
+          final int alpha, final int red, final int green, final int blue) =>
+      (alpha << 24) | (red << 16) | (green << 8) | blue;
 }
