@@ -1,6 +1,18 @@
 include: package:flutter_lints/flutter.yaml
 
+analyzer:
+  exclude:
+    - '**/*.g.dart'
+    - '**/*.freezed.dart'
+  errors:
+    invalid_annotation_target: ignore
+  language:
+    strict-casts: true
+    strict-raw-types: true
+
 linter:
   rules:
-     avoid_print: true  # Uncomment to disable the `avoid_print` rule
-     prefer_single_quotes: true  # Uncomment to enable the `prefer_single_quotes` rule
+    avoid_print: true  # DO avoid print calls in production code.
+    prefer_single_quotes: true  # DO use single quotes where they would not require additional escapes
+    always_use_package_imports: true # DO avoid relative imports for files in lib/
+    use_string_in_part_of_directives: true # DO use strings in part of directives

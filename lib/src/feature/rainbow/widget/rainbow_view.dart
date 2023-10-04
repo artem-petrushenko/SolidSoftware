@@ -1,6 +1,9 @@
-import 'dart:math';
-
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+
+import 'package:flutter_bloc/flutter_bloc.dart';
+
+import 'package:solid_software/src/feature/rainbow/bloc/rainbow_bloc.dart';
 
 class RainbowView extends StatelessWidget {
   const RainbowView({super.key});
@@ -22,31 +25,16 @@ class AnimatedContainerExample extends StatefulWidget {
 }
 
 class _AnimatedContainerExampleState extends State<AnimatedContainerExample> {
-  int color = 0xFFFF0000;
-  int textColor = 0xFF00FFFF;
-  final Random random = Random();
-
   @override
   Widget build(BuildContext context) {
+    final color =
+        context.select((RainbowBloc bloc) => bloc.state.backgroundColor);
+    final textColor =
+        context.select((RainbowBloc bloc) => bloc.state.textColor);
     return GestureDetector(
-      onTap: () {
-        setState(() {
-          const alpha = 255;
-          final red = random.nextInt(256);
-          final green = random.nextInt(256);
-          final blue = random.nextInt(256);
-
-          color = (alpha << 24) | (red << 16) | (green << 8) | blue;
-
-          final invertedRed = 255 - red;
-          final invertedGreen = 255 - green;
-          final invertedBlue = 255 - blue;
-
-          textColor = (alpha << 24) |
-              (invertedRed << 16) |
-              (invertedGreen << 8) |
-              invertedBlue;
-        });
+      onTap: () async {
+        HapticFeedback.vibrate();
+        context.read<RainbowBloc>().add(const RainbowEvent.changeColors());
       },
       child: AnimatedContainer(
         width: MediaQuery.of(context).size.width,
