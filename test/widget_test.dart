@@ -10,24 +10,51 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import 'package:solid_software/src/app.dart';
+import 'package:solid_software/src/feature/rainbow/widget/rainbow_view.dart';
 
 void main() {
-  testWidgets('Counter increments smoke test', (WidgetTester tester) async {
-    final SharedPreferences sharedPreferences =
-        await SharedPreferences.getInstance();
-    // Build our app and trigger a frame.
-    await tester.pumpWidget(App(sharedPreferences: sharedPreferences));
+  group('Widget Test', () {
+    SharedPreferences.setMockInitialValues({});
+    late final App app;
+    late final SharedPreferences sharedPreferences;
 
-    // Verify that our counter starts at 0.
-    expect(find.text('0'), findsOneWidget);
-    expect(find.text('1'), findsNothing);
+    setUpAll(() async {
+      sharedPreferences = await SharedPreferences.getInstance();
+      app = App(sharedPreferences: sharedPreferences);
+    });
 
-    // Tap the '+' icon and trigger a frame.
-    await tester.tap(find.byIcon(Icons.add));
-    await tester.pump();
+    tearDownAll(() async {});
 
-    // Verify that our counter has incremented.
-    expect(find.text('0'), findsNothing);
-    expect(find.text('1'), findsOneWidget);
+    testWidgets('Find Text', (WidgetTester tester) async {
+      await tester.pumpWidget(app);
+      expect(find.text('Hello There'), findsOneWidget);
+    });
+
+    testWidgets('Tap triggers color change', (WidgetTester tester) async {
+      await tester.pumpWidget(app);
+
+      expect(find.byType(AnimatedContainerExample), findsOneWidget);
+
+      final decoratedBoxFinder = find.byType(DecoratedBox);
+
+      final initialColor = (tester
+              .widget<DecoratedBox>(
+                decoratedBoxFinder,
+              )
+              .decoration as BoxDecoration)
+          .color;
+
+      await tester.tap(find.byType(AnimatedContainerExample));
+      await tester.pumpAndSettle(const Duration(seconds: 3));
+
+      final newColor = (tester
+              .widget<DecoratedBox>(
+                decoratedBoxFinder,
+              )
+              .decoration as BoxDecoration)
+          .color;
+
+      expect(initialColor, isNot(newColor));
+    });
   });
 }
